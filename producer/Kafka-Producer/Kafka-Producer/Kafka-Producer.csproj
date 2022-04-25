@@ -6,6 +6,7 @@
     <RootNamespace>Kafka_Producer</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <StartupObject>Kafka_Producer.Producer</StartupObject>
   </PropertyGroup>
 	
 	<ItemGroup>

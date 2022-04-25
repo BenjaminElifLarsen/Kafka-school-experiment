@@ -4,17 +4,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace Kafka_Producer;
 
-internal class Producer
+public class Producer
 {
     static void Main(string[] args)
     {
-        if(args.Length != 1)
-        {
-            Console.WriteLine("Please provide the configuration file path as a command line argument");
-        }
+        //if(args.Length != 1)
+        //{
+        //    Console.WriteLine("Please provide the configuration file path as a command line argument");
+        //}
 
         IConfiguration config = new ConfigurationBuilder()
-            .AddIniFile(args[0])
+            .AddIniFile("Kafka-Producer.properties")
             .Build();
 
         const string topic = "water";
