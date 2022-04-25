@@ -42,6 +42,7 @@ public class Producer
                         else
                         {
                             Console.WriteLine($"Produced event to topic {topic}: key = {house, -10} value = {usage}");
+                            numProduced += 1;
                         }
                     }
                 );
