@@ -5,13 +5,13 @@ namespace Kafka_Producer;
 
 internal class House : ISpecificRecord
 {
-    private static Schema _schema = Schema.Parse(File.ReadAllText("House.avsc"));
+    public static Schema _SCHEMA = Schema.Parse(File.ReadAllText("House.avsc"));
     public string Location { get; set; }
     public double WaterUsage { get; set; }
     public double ElectricityUsage { get; set; }
     public double HeatingUsage { get; set; }
 
-    public Schema Schema => _schema;
+    public Schema Schema => _SCHEMA;
 
     public object Get(int fieldPos)
     {
