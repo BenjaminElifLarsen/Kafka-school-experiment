@@ -9,7 +9,7 @@ It seems like, with how the programs are right now, that Producer needs to be ru
   The reason for this is that it adds the schema to the registry. 
   The schemas in both ends need to be identical. Comsumer seems to check up against the schema in the schema registry (need to figure out how it finds a specific schema).
     The same goes for the classes, fields/properties need to share names. 
-    The class that goes with the schema, needs a public static Schema _SCHEMA with the schema information (can use Schema.Parse(string)).
+    The class, that goes with the schema, needs a public static Schema _SCHEMA with the schema information (can use Schema.Parse(string)).
     
 The comsumer project will retrive all data in the given topic each time it is run, even data is has read before.
 
