@@ -30,7 +30,7 @@ public class Producer
             new House{Location = "E", ElectricityUsage = 54, HeatingUsage = 1.5, WaterUsage = 0.4},
         };
 
-        using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = "localhost:9092"}))
+        using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = "localhost:8081" }))
         using (var producer = new ProducerBuilder<Null, House>(new ProducerConfig { BootstrapServers = "localhost:9092" }).SetValueSerializer(new AvroSerializer<House>(schemaRegistry)).Build())
         {
             //var houseSchema = (Avro.RecordSchema)Avro.Schema.Parse(File.ReadAllText("House.avsc"));
