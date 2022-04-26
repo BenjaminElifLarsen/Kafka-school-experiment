@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Avro.Generic;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
+using Kafka;
 
 namespace Kafka_Producer;
 
@@ -11,15 +12,6 @@ public class Producer
 {
     static void Main(string[] args)
     {
-        //if(args.Length != 1)
-        //{
-        //    Console.WriteLine("Please provide the configuration file path as a command line argument");
-        //}
-
-        //IConfiguration config = new ConfigurationBuilder()
-        //    .AddIniFile("Kafka-Producer.properties")
-        //    .Build();
-
         const string topic = "house";
 
         House[] houses = {
@@ -33,34 +25,14 @@ public class Producer
         using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = "localhost:8081" }))
         using (var producer = new ProducerBuilder<Null, House>(new ProducerConfig { BootstrapServers = "localhost:9092" }).SetValueSerializer(new AvroSerializer<House>(schemaRegistry)).Build())
         {
-            //var houseSchema = (Avro.RecordSchema)Avro.Schema.Parse(File.ReadAllText("House.avsc"));
-
-
             var numProduced = 0;
             const int numMessage = 10;
-            Random random = new Random();
+            Random random = new();
             for (int i = 0; i < numMessage; i++)
             {
                 var house = houses[random.Next(houses.Count())];
-                //var record = new GenericRecord(houseSchema);
-                //record.Add(nameof(house.Location), house.Location);
-                //record.Add(nameof(house.WaterUsage), house.WaterUsage);
-                //record.Add(nameof(house.ElectricityUsage), house.ElectricityUsage);
-                //record.Add(nameof(house.HeatingUsage), house.HeatingUsage);
                 var message = new Message<Null, House> { Value = house };
-                producer.ProduceAsync(topic, message //,
-                    //(deliveryReport) =>
-                    //{
-                    //    if (deliveryReport.Error != ErrorCode.NoError)
-                    //    {
-                    //        Console.WriteLine($"Failed to deliver message: {deliveryReport.Error}");
-                    //    }
-                    //    else
-                    //    {
-                    //        Console.WriteLine($"Produced event to topic {topic}");
-                    //        numProduced += 1;
-                    //    }
-                    //}
+                producer.ProduceAsync(topic, message 
                 ).ContinueWith(task =>
                  {
                      numProduced++;
