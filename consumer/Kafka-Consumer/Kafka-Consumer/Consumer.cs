@@ -37,7 +37,7 @@ internal class Consumer
         {
             GroupId = Guid.NewGuid().ToString(),
             BootstrapServers = "localhost:9092",
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            AutoOffsetReset = AutoOffsetReset.Latest
         };
 
         using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = "localhost:8081" }))
