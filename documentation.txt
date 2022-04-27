@@ -1,0 +1,55 @@
+This file explains how to transmit complex models over Kafka via Confluent in C Sharp.
+
+--Docker--
+To run the program, the first thing that is needed is to run one of the two docker-compose files. 
+Both of the files will work, but the one in kafka-project-docker contains the minimum needed. 
+The minimum needed is a broker, a zookeeper, and a schema-registry.
+
+When the container is running the following command needs to be run: 
+	docker compose exec broker kafka-topic --create --topic house --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1
+This will create the topic that both the producer and comsumer projects will use. Without this the projects will fail.
+
+--Producer--
+The producer class needs to use a CachedSchemaRegistryClient and a ProducerBuilder, both of these are disposable and should be in using statements.
+Firstly the CachedSchemaRegistryClient needs created, it is important to set the Url, the value is the schema-registry url (localhost) and port 8081. 
+This will be the location where any schema is stored and retrieved. When running the project the producer class will add the house schema to the registry.
+The ProducerBuilder is generic and takes two inputs, a key and a value. Because of the complex model the key is not needed and is be set to Null (A Confluent version of null) and the value is the model class itself.
+The argument of ProducerBuilder's constructur needs a ProducerConfig with minimum BootStrapServers to be set, this value is the broker url (localhost) and port 9092.
+On the ProducerBuilder the following method, SetValueSerializer, is called with is given a new instance of AvroSerializer (a generic class that takes one input, the same model class used in the ProducerBuilder) with the CachedSchemaRegistryClient variable in the constructur.
+This will set up Confluent's Producer to validate the models before sending them and where to send the models over too.
+To produce a message, the variable of ProducerBuilder needs to call ProduceAsync(topic, new Message<Null,Model>{Value = model}). 
+The reason for using ProduceAsync rather than Produce is related to the serialiser, an async version is used and thus ProduceAsync is needed. 
+
+--Consumer--
+The consumer class uses the same CachedSchemaRegistryClient setup, the differences is that after this a ConsumerBuilder rather than ProducerBuilder is used.
+It is important to note is that the consumer will contact the registry to validate its schema is correct when calling Consume on the consumerBuilder variable.
+The ConsumerBuilder is mostly simily to ProducerBuilder regarding the generic types used. The constructur uses a ConsumerConfig (explained below), while setting the SetValueDeserializer with a AsSyncOverAsync on it.
+
+The ConsumerConfig contains three important arguments, GroupId, BootstrapServers, and AutoOffsetReset. 
+	The GroupId can be set to any value. All clients that share the same group id is considered to belong to the same group.
+	BootstrapServers is a string of the bootstrap servers, in this setup there is only one at localhost:9092.
+	AutoOffsetReset is related to the offset of data and Confluent permits three values, Earlist, Latest, and Error. The best way to think about these is that Earlist will retrieve all data in the broker that belongs to the given topic, while Latest will only retrieve data transmitted to the broker after the consumer was active.
+
+--Avro--
+Avro, via Confluent, is used setting up the schema used for transmitting the objects. The schema itself is stored in the file 'House.avsc' and needs to be loaded into the House object.
+Do note that the file is not needed, the data in the file can be stored in the object directly.  
+
+When using Confluent's Avro the models are required to implement the interface ISpecificRecord.
+It will add a Get method, a Put method and a Schema property. These are used to get and set the values of the model using a switch case. See House in any of the project for an example of how it is done.
+A field that need to be set is public static Schma _SCHEMA which will contain the schema itself. This is needed for the producer and consumer as they retrieve the schema for (de)serialising of the object from it.
+
+The schema contains the class name, the namespace of the class, and names of the fields that get (de)serialised. These needs to be identical to the actually class.
+
+--Other stuff--
+The avro schema NEED to be 100 % identical on both sides and the model classes, in both projects, NEED to fulfill the schema else the consumer will not work. 
+The producer does not get affected by any differences since it will registrate the schema, but the consumer does compare its own schema with the one on the schema registry server. 
+
+--The links there were used for this--
+https://developer.confluent.io/get-started/dotnet
+https://docs.confluent.io/platform/current/clients/confluent-kafka-dotnet/_site/api/Confluent.Kafka.html
+https://www.confluent.io/blog/decoupling-systems-with-apache-kafka-schema-registry-and-avro/ (outdated, it seems, regarding the repo it references)
+https://github.com/confluentinc/confluent-kafka-dotnet/tree/master/examples/AvroSpecific
+https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/examples/AvroBlogExamples/Program.cs
+
+--Github--
+https://github.com/BenjaminElifLarsen/Kafka-school-experiment
