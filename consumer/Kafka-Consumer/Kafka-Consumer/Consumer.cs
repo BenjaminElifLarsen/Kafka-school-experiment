@@ -22,11 +22,11 @@ internal class Consumer
         var config = new ConsumerConfig
         {
             GroupId = Guid.NewGuid().ToString(),
-            BootstrapServers = "localhost:9092",
+            BootstrapServers = "172.16.250.13:9092",
             AutoOffsetReset = AutoOffsetReset.Latest
         };
 
-        using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = "localhost:8081" }))
+        using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = "172.16.250.12:8081" }))
         using (var consumer = new ConsumerBuilder<Null, House>(config).SetValueDeserializer(new AvroDeserializer<House>(schemaRegistry).AsSyncOverAsync()).Build())
         {
             consumer.Subscribe(topic);

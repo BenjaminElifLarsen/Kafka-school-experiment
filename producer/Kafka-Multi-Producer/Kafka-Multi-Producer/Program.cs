@@ -2,13 +2,13 @@
 using Kafka;
 using Kafka_Multi_Producer;
 
-StrartingProducers(2,3);
+StrartingProducers(5,123);
 
 void StrartingProducers(byte threadAmount, ulong producingAmount)
 {
     string topic = "house";
-    string schemaUrl = "localhost:8081";
-    string bootstrapServer = "localhost:9092";
+    string schemaUrl = "172.16.250.12:8081";
+    string bootstrapServer = "172.16.250.13:9092";
     Thread[] threads = new Thread[threadAmount];
     House[] houses = {
             new House{Location = "A", ElectricityUsage = 14, HeatingUsage = 1.1, WaterUsage = 0.1},
