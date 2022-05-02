@@ -2,7 +2,7 @@
 using Kafka;
 using Kafka_Multi_Producer;
 
-StrartingProducers(2,10);
+StrartingProducers(2,3);
 
 void StrartingProducers(byte threadAmount, ulong producingAmount)
 {
@@ -21,10 +21,9 @@ void StrartingProducers(byte threadAmount, ulong producingAmount)
     for (int i = 0; i < threadAmount; i++)
     {
         var producer = new Producer(houses, schemaUrl, bootstrapServer, topic);
-        //producer.Produce(1);
         threads[i] = new Thread(producer.Produce);
         threads[i].Start(producingAmount);
     }
-    while (threads.Select(x => !x.IsAlive).Count() != threads.Count()) { }
+    while (threads.Select(x => !x.IsAlive).Count() != threads.Length) { }
 }
 

@@ -1,7 +1,4 @@
 ﻿using Confluent.Kafka;
-using System;
-using System.Threading;
-using Microsoft.Extensions.Configuration;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using Confluent.Kafka.SyncOverAsync;
