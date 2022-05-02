@@ -2,7 +2,7 @@
 using Kafka;
 using Kafka_Multi_Producer;
 
-StrartingProducers(8,2);
+StrartingProducers(40,1250);
 
 void StrartingProducers(byte threadAmount, ulong producingAmount)
 {
@@ -17,12 +17,14 @@ void StrartingProducers(byte threadAmount, ulong producingAmount)
             new House{Location = "D", ElectricityUsage = 44, HeatingUsage = 1.4, WaterUsage = 3.1},
             new House{Location = "E", ElectricityUsage = 54, HeatingUsage = 1.5, WaterUsage = 0.4},
         };
-
+    var timeStart = DateTime.Now;
     Parallel.For(0, threadAmount, index =>
     {
         var producer = new Producer(houses, schemaUrl, bootstrapServer, topic);
         var result = producer.Produce(producingAmount);
         Console.WriteLine("Index " + index + ": " + result);
     });
+    var timePassed = DateTime.Now - timeStart;
+    Console.WriteLine(timePassed.ToString());
 }
 
