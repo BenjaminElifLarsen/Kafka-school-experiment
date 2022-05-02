@@ -20,12 +20,12 @@ internal class Producer
         _topic = topic;
     }
 
-    public void Produce(object amount)
+    public ulong Produce(ulong amount)
     {
+        ulong numProduced = 0;
         using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = _schemaString })) {
             using (var producer = new ProducerBuilder<Null, House>(new ProducerConfig { BootstrapServers = _bootstrapServier }).SetValueSerializer(new AvroSerializer<House>(schemaRegistry)).Build())
             {
-                var numProduced = 0;
                 Random random = new();
                 var house = _houses[random.Next(_houses.Length)];
                 for (ulong i = 0; i < (ulong)amount; i++)
@@ -34,18 +34,17 @@ internal class Producer
                     producer.ProduceAsync(_topic, message
                     ).ContinueWith(task =>
                         {
-                            numProduced += task.IsFaulted ? 0 : 1;
+                            numProduced += (ulong)(task.IsFaulted ? 0 : 1);
                             /*Console.WriteLine(
                               task.IsFaulted
                                   ? $"error producing message: {task.Exception.Message}, {task.Exception.InnerException.InnerException.Message}"
                                   : $"produced to: {task.Result.TopicPartitionOffset}");*/
-
                         }
                     ).Wait();
                 }
-                Console.WriteLine(Thread.CurrentThread.Name + ": " + numProduced);
             }
         }
+        return numProduced;
     }
 
 }
