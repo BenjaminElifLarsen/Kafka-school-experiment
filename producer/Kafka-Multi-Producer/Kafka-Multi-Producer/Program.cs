@@ -2,7 +2,7 @@
 using Kafka;
 using Kafka_Multi_Producer;
 
-StrartingProducers(5,123);
+StrartingProducers(8,2000);
 
 void StrartingProducers(byte threadAmount, ulong producingAmount)
 {
