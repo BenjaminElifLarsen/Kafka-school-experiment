@@ -34,15 +34,16 @@ internal class Producer
                     producer.ProduceAsync(_topic, message
                     ).ContinueWith(task =>
                         {
-                            numProduced++;
-                            Console.WriteLine(
+                            numProduced += task.IsFaulted ? 0 : 1;
+                            /*Console.WriteLine(
                               task.IsFaulted
                                   ? $"error producing message: {task.Exception.Message}, {task.Exception.InnerException.InnerException.Message}"
-                                  : $"produced to: {task.Result.TopicPartitionOffset}");
+                                  : $"produced to: {task.Result.TopicPartitionOffset}");*/
 
                         }
                     ).Wait();
                 }
+                Console.WriteLine(Thread.CurrentThread.Name + ": " + numProduced);
             }
         }
     }
