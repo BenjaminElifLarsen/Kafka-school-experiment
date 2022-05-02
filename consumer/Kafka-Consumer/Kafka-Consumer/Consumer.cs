@@ -13,17 +13,6 @@ internal class Consumer
 {
     static void Main(string[] args)
     {
-        //if(args.Length != 1)
-        //{
-        //    Console.WriteLine("Please provide the configuration file path as a command line argument");
-        //}
-
-        //IConfiguration config = new ConfigurationBuilder()
-        //    .AddIniFile("Kafka-Consumer.properties")
-        //    .Build();
-
-        //config["group.id"] = "kafka";
-        //config["auto.offset.reset"] = "earliest";
 
         const string topic = "house";
 
@@ -50,10 +39,10 @@ internal class Consumer
                 {
                     var cr = consumer.Consume(cts.Token);
                     Console.WriteLine(cr.Message.Timestamp.UtcDateTime.ToString("yyyy-MM-dd HH:mm:ss") + $":" + Environment.NewLine +
-                        $"Location {cr.Message.Value.Location}, " + Environment.NewLine +
-                        $"Electricity: {cr.Message.Value.ElectricityUsage}, " + Environment.NewLine +
-                        $"Heating: {cr.Message.Value.HeatingUsage}, " + Environment.NewLine +
-                        $"Water: {cr.Message.Value.WaterUsage}");
+                        $" Location {cr.Message.Value.Location}, " + Environment.NewLine +
+                        $" Electricity: {cr.Message.Value.ElectricityUsage}, " + Environment.NewLine +
+                        $" Heating: {cr.Message.Value.HeatingUsage}, " + Environment.NewLine +
+                        $" Water: {cr.Message.Value.WaterUsage}");
                 }
             }
             catch (OperationCanceledException)
