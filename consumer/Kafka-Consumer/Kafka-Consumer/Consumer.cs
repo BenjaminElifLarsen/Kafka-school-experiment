@@ -23,7 +23,7 @@ internal class Consumer
         {
             GroupId = Guid.NewGuid().ToString(),
             BootstrapServers = "localhost:9092",
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            AutoOffsetReset = AutoOffsetReset.Latest
         };
 
         using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = "localhost:8081" }))
@@ -39,7 +39,8 @@ internal class Consumer
                         $" Location {cr.Message.Value.Location}, " + Environment.NewLine +
                         $" Electricity: {cr.Message.Value.ElectricityUsage}, " + Environment.NewLine +
                         $" Heating: {cr.Message.Value.HeatingUsage}, " + Environment.NewLine +
-                        $" Water: {cr.Message.Value.WaterUsage}");
+                        $" Water: {cr.Message.Value.WaterUsage}" + Environment.NewLine +
+                        $" Reading Time: {cr.Message.Value.Reading}");
                 }
             }
             catch (OperationCanceledException)

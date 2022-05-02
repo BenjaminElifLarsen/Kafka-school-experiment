@@ -7,6 +7,7 @@
 		{ "name": "Location", "type": "string"},
 		{ "name" : "WaterUsage", "type": "double"},
 		{ "name" : "ElectricityUsage", "type": "double"},
-		{ "name" : "HeatingUsage", "type": "double"}
+		{ "name" : "HeatingUsage", "type": "double"},
+		{ "name" : "Reading", "type": "long"}
 	]
 }

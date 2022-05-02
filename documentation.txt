@@ -47,6 +47,20 @@ The producer does not get affected by any differences since it will registrate t
 --The links there were used for this--
 https://developer.confluent.io/get-started/dotnet
 https://docs.confluent.io/platform/current/clients/confluent-kafka-dotnet/_site/api/Confluent.Kafka.html
+
+
+global compatibility requirements update 
+curl -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+    --data '{"compatibility": "FORWARD"}' \
+    http://localhost:8081/config
+  https://docs.confluent.io/platform/current/schema-registry/avro.html for the different permitted values
+  Need to figure out how to deal with this in the consumer side.
+
+
+
+
+
+
 https://www.confluent.io/blog/decoupling-systems-with-apache-kafka-schema-registry-and-avro/ (outdated, it seems, regarding the repo it references)
 https://github.com/confluentinc/confluent-kafka-dotnet/tree/master/examples/AvroSpecific
 https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/examples/AvroBlogExamples/Program.cs
