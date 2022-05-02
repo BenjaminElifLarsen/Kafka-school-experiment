@@ -40,6 +40,8 @@ A field that need to be set is public static Schma _SCHEMA which will contain th
 
 The schema contains the class name, the namespace of the class, and names of the fields that get (de)serialised. These needs to be identical to the actually class.
 
+The permitted data types can be found here: https://docs.confluent.io/platform/current/schema-registry/serdes-develop/serdes-avro.html#serdes-and-formatter-avro
+
 --Other stuff--
 The avro schema NEED to be 100 % identical on both sides and the model classes, in both projects, NEED to fulfill the schema else the consumer will not work. 
 The producer does not get affected by any differences since it will registrate the schema, but the consumer does compare its own schema with the one on the schema registry server. 
