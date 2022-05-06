@@ -4,7 +4,7 @@ using Kafka_Multi_Producer;
 
 StrartingProducers(40,1250);
 
-void StrartingProducers(byte threadAmount, ulong producingAmount)
+void StrartingProducers(byte producerAmount, ulong producingAmount)
 {
     string topic = "house";
     string schemaUrl = "172.16.250.12:8081";
@@ -18,7 +18,7 @@ void StrartingProducers(byte threadAmount, ulong producingAmount)
             new House{Location = "E", ElectricityUsage = 54, HeatingUsage = 1.5, WaterUsage = 0.4},
         };
     var timeStart = DateTime.Now;
-    Parallel.For(0, threadAmount, index =>
+    Parallel.For(0, producerAmount, index =>
     {
         var producer = new Producer(houses, schemaUrl, bootstrapServer, topic);
         var result = producer.Produce(producingAmount);
