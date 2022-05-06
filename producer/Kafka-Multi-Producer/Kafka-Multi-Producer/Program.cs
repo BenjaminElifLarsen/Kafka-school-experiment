@@ -26,8 +26,7 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
             var house = houses[random.Next(houses.Length)].UniqueHouse();
             house.Location += index.ToString();
             var producer = new Producer(house, schemaUrl, bootstrapServer, topic, _infoPublisher);
-            var result = producer.Produce(producingAmount);
-            Console.WriteLine("Index " + index + ": " + result);
+            producer.Produce(producingAmount);
         })
     );
 
