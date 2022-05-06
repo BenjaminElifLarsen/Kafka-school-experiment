@@ -19,8 +19,9 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
             new House{Location = "D", ElectricityUsage = 44, HeatingUsage = 1.4, WaterUsage = 3.1},
             new House{Location = "E", ElectricityUsage = 54, HeatingUsage = 1.5, WaterUsage = 0.4},
         };
-    var timeStart = DateTime.Now;
+    
     Random random = new();
+    var timeStart = DateTime.Now;
     Task t = Task.Factory.StartNew( () => Parallel.For(0, producerAmount, index =>
         {
             var house = houses[random.Next(houses.Length)].UniqueHouse();
@@ -34,10 +35,13 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
     {
         var informations = _infoPublisher.GetInfos();
         Console.Clear();
-        foreach(var info in informations)
+        if (informations != null)
         {
-            Console.WriteLine($"{info.location}: {info.messageProduced}");
-            Thread.Sleep(500);
+            foreach (var (location, messageProduced) in informations)
+            {
+                Console.WriteLine($"{location}: {messageProduced}");
+                Thread.Sleep(100);
+            }
         }
     } while (!t.IsCompleted);
 

@@ -49,6 +49,7 @@ internal class Producer
                 }
             }
         }
+        RemoveSubscriptions();
         return;
     }
 
@@ -57,4 +58,8 @@ internal class Producer
         e.Add(_house.Location, numProduced);
     }
 
+    protected virtual void RemoveSubscriptions()
+    {
+        _infoPublisher.RaiseGetInfoEvent -= AddInfo;
+    }
 }
