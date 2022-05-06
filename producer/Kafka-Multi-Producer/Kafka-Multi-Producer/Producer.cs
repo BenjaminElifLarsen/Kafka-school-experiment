@@ -27,7 +27,7 @@ internal class Producer
         _infoPublisher.RaiseGetInfoEvent += AddInfo;
     }
 
-    public void Produce(ulong amount)
+    public ulong Produce(ulong amount)
     {
         using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = _schemaString })) {
             using (var producer = new ProducerBuilder<Null, House>(new ProducerConfig { BootstrapServers = _bootstrapServier }).SetValueSerializer(new AvroSerializer<House>(schemaRegistry)).Build())
@@ -50,7 +50,7 @@ internal class Producer
             }
         }
         RemoveSubscriptions();
-        return;
+        return numProduced;
     }
 
     protected virtual void AddInfo(Object sender, ControlEvents.GetProcessEventArgs e)

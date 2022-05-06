@@ -2,8 +2,10 @@
 using Kafka;
 using Kafka_Multi_Producer;
 using Kafka_Multi_Producer.Broker;
+using System.Text;
 
 StrartingProducers(3,100);
+
 
 void StrartingProducers(short producerAmount, ulong producingAmount)
 {
@@ -27,7 +29,8 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
             var house = houses[random.Next(houses.Length)].UniqueHouse();
             house.Location += index.ToString();
             var producer = new Producer(house, schemaUrl, bootstrapServer, topic, _infoPublisher);
-            producer.Produce(producingAmount);
+            var data = producer.Produce(producingAmount);
+            while (!Data.AddValue(data)) ;
         })
     );
 
@@ -37,15 +40,18 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
         Console.Clear();
         if (informations != null)
         {
+            StringBuilder builder = new();
             foreach (var (location, messageProduced) in informations)
             {
-                Console.WriteLine($"{location}: {messageProduced}");
-                Thread.Sleep(100);
+                builder.AppendLine($"{location}: {messageProduced}");
             }
+            Console.WriteLine(builder.ToString());
+            Thread.Sleep(1000);
         }
     } while (!t.IsCompleted);
 
     var timePassed = DateTime.Now - timeStart;
     Console.WriteLine(timePassed.ToString());
+    Console.WriteLine($"Total Produced: {Data.MessageProduced}");
 }
 
