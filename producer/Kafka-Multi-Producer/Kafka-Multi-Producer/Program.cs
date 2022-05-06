@@ -4,7 +4,7 @@ using Kafka_Multi_Producer;
 using Kafka_Multi_Producer.Broker;
 using System.Text;
 
-StrartingProducers(3,100);
+StrartingProducers(40,10000);
 
 
 void StrartingProducers(short producerAmount, ulong producingAmount)
