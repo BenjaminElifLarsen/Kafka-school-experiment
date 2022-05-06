@@ -9,9 +9,9 @@ StrartingProducers(40,10000);
 
 void StrartingProducers(short producerAmount, ulong producingAmount)
 {
-    string topic = "house";
-    string schemaUrl = "172.16.250.12:8081";
-    string bootstrapServer = "172.16.250.13:9092";
+    string topic = "house"; // The topic the data is stored under in Kafka.
+    string schemaUrl = "172.16.250.12:8081"; // Ip and port of the schema registry server.
+    string bootstrapServer = "172.16.250.13:9092"; // Ip and port of the kafka registry server.
     InfoPublisher _infoPublisher = Publisher.InfoPublisher;
 
     House[] houses = {
@@ -24,6 +24,9 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
     
     Random random = new();
     var timeStart = DateTime.Now;
+    /* We create a task, that is automatically started, this ensures that the main thread can do other work.
+     * After creating the task, the main thread will run the do while until the task 't' has completed.
+     */
     Task t = Task.Factory.StartNew( () => Parallel.For(0, producerAmount, index =>
         {
             var house = houses[random.Next(houses.Length)].UniqueHouse();
@@ -36,7 +39,7 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
 
     do
     {
-        var informations = _infoPublisher.GetInfos();
+        var informations = _infoPublisher.GetInfos(); // Here we are using a publisher to call all producers current produced messages.
         Console.Clear();
         if (informations != null)
         {

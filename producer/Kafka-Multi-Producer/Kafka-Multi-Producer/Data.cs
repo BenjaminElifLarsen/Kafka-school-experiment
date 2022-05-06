@@ -12,7 +12,7 @@ internal static class Data
     public static ulong MessageProduced { get; private set; }
     public static bool AddValue(ulong value)
     {
-        if(0 == Interlocked.Exchange(ref usingResource, 1))
+        if(0 == Interlocked.Exchange(ref usingResource, 1)) // This ensure only a single thread can write to the values in the if-statement at a time.
         {
             Data.MessageProduced += value;
             Interlocked.Exchange(ref usingResource, 0);
