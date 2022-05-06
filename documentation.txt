@@ -58,7 +58,9 @@ curl -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" \
   https://docs.confluent.io/platform/current/schema-registry/avro.html for the different permitted values
   Need to figure out how to deal with this in the consumer side.
 
-
+If using the CLI and standing on the bootstrapserver (most likely will also work on others) this can be run
+	/bin/kafka-log-dirs --describe --bootstrap-server <ip>:9092 --topic-list <topic>
+and it will list information from each broker.
 
 
 

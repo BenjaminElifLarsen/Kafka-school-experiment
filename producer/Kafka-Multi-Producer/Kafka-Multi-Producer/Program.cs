@@ -11,7 +11,7 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
 {
     string topic = "house"; // The topic the data is stored under in Kafka.
     string schemaUrl = "172.16.250.12:8081"; // Ip and port of the schema registry server.
-    string bootstrapServer = "172.16.250.13:9092"; // Ip and port of the kafka registry server.
+    string bootstrapServer = "172.16.250.13:9092"; // Ip and port of the first kafka broker server.
     InfoPublisher _infoPublisher = Publisher.InfoPublisher;
 
     House[] houses = {
