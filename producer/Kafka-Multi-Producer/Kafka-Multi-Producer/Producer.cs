@@ -14,7 +14,7 @@ internal class Producer
     private readonly string _schemaString;
     private readonly string _topic;
     private readonly string _bootstrapServier;
-    private ulong numProduced = 0;
+    private ulong _numProduced = 0;
 
     public Producer(House house, string schemaUrl, string bootstrapServer, string topic, InfoPublisher infoPublisher)
     {
@@ -24,7 +24,7 @@ internal class Producer
         _topic = topic;
         _infoPublisher = infoPublisher;
 
-        _infoPublisher.RaiseGetInfoEvent += AddInfo;
+        _infoPublisher.RaiseGetInfoEvent += AddInfo; // Here we subscribe the specific method to the specific event, do note that they need to have the same parameters.
     }
 
     public ulong Produce(ulong amount)
@@ -32,17 +32,13 @@ internal class Producer
         using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = _schemaString })) {
             using (var producer = new ProducerBuilder<Null, House>(new ProducerConfig { BootstrapServers = _bootstrapServier }).SetValueSerializer(new AvroSerializer<House>(schemaRegistry)).Build())
             {
-                for (ulong i = 0; i < (ulong)amount; i++)
+                for (ulong i = 0; i < amount; i++)
                 {
                     var message = new Message<Null, House> { Value = _house };
                     producer.ProduceAsync(_topic, message
                     ).ContinueWith(task =>
                         {
-                            numProduced += (ulong)(task.IsFaulted ? 0 : 1);
-                            /*Console.WriteLine(
-                              task.IsFaulted
-                                  ? $"error producing message: {task.Exception.Message}, {task.Exception.InnerException.InnerException.Message}"
-                                  : $"produced to: {task.Result.TopicPartitionOffset}");*/
+                            _numProduced += (ulong)(task.IsFaulted ? 0 : 1);
                         }
                     ).Wait();
                     _house.UpdateTime(2);
@@ -50,14 +46,19 @@ internal class Producer
             }
         }
         RemoveSubscriptions();
-        return numProduced;
+        return _numProduced;
     }
 
     protected virtual void AddInfo(Object sender, ControlEvents.GetProcessEventArgs e)
     {
-        e.Add(_house.Location, numProduced);
+        e.Add(_house.Location, _numProduced);
     }
-
+    
+    /*
+     * Because we are using subscriptions and events to get data from the producers this call here is important.
+     * We NEED to unsubscribe any subscribed methods before the garbage collection can be run for the object
+     * as else the event will hold a reference to the object. 
+     */
     protected virtual void RemoveSubscriptions()
     {
         _infoPublisher.RaiseGetInfoEvent -= AddInfo;

@@ -3,7 +3,7 @@ using Avro.Specific;
 
 namespace Kafka;
 
-internal class House : ISpecificRecord
+internal class House : ISpecificRecord // This interface is required by the Avro we are using.
 {
     private Random _rnd = new();
 
@@ -14,7 +14,7 @@ internal class House : ISpecificRecord
     private DateTime _lastReading = DateTime.Now;
 
 
-    public static Schema _SCHEMA = Schema.Parse(File.ReadAllText("models/House.avsc"));
+    public static Schema _SCHEMA = Schema.Parse(File.ReadAllText("models/House.avsc")); // This variable needs to be present for Avro to work.
     public string Location { get; set; }
     public double WaterUsage { get { return _waterUsage * _rnd.NextDouble() * 2; } set => _waterUsage = value; }
     public double ElectricityUsage { get => _electricityUsage * _rnd.NextDouble() * 2; set => _electricityUsage = value; }
@@ -28,6 +28,9 @@ internal class House : ISpecificRecord
         _lastReading = _lastReading.AddHours(houseIncreasement);
     }
 
+    /*
+     * Used by Avro when serialising the data. The key-values need to be same as in Put(...)
+     */
     public object Get(int fieldPos)
     {
         switch (fieldPos)
@@ -41,6 +44,9 @@ internal class House : ISpecificRecord
         }
     }
 
+    /*
+     * Used by Avro when deserialising the data. The key-values need to be same as in Get(...)
+     */
     public void Put(int fieldPos, object fieldValue)
     {
         switch (fieldPos)
@@ -54,6 +60,9 @@ internal class House : ISpecificRecord
         }
     }
 
+    /*
+     * This is used to ensure we get an unique version of the house so no reference is shared with other producers.
+     */
     public House UniqueHouse()
     {
         return new House

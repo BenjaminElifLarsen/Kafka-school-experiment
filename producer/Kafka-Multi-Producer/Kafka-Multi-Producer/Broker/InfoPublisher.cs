@@ -8,7 +8,7 @@ internal class InfoPublisher
     /*
      * This event handler, RaiseGetInfoEvent, is what classes subscripe to.
      * As it can be seen we use the ControlEvent.GetProcessEventArgs class in the delegate,
-     * which means that the subscripted methods can access Add(...) and GetProcessings().
+     * which means that the subscribed methods can access Add(...) and GetProcessings().
      */
     public delegate void getInfoEventHandler(object sender, ControlEvents.GetProcessEventArgs args);
     public event getInfoEventHandler RaiseGetInfoEvent;
@@ -25,7 +25,7 @@ internal class InfoPublisher
     protected List<(string location, ulong messageProduced)> OnGetInfo(ControlEvents.GetProcessEventArgs e)
     {
         getInfoEventHandler eventHandler = RaiseGetInfoEvent;
-        if(eventHandler != null) // Only run this code if there are any subscripers 
+        if(eventHandler != null) // Only run this code if there are any subscribers 
         {
             eventHandler.Invoke(this, e);
             return e.GetProcessings();

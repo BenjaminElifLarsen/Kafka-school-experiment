@@ -24,7 +24,8 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
     
     Random random = new();
     var timeStart = DateTime.Now;
-    /* We create a task, that is automatically started, this ensures that the main thread can do other work.
+    /* 
+     * We create a task, that is automatically started, this ensures that the main thread can do other work.
      * After creating the task, the main thread will run the 'do while' until the task 't' has completed.
      */
     Task t = Task.Factory.StartNew( () => Parallel.For(0, producerAmount, index =>
@@ -39,7 +40,7 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
 
     do
     {
-        var informations = _infoPublisher.GetInfos(); // Here we are using a publisher to call all producers current produced messages.
+        var informations = _infoPublisher.GetInfos(); // Here we are using a publisher to call all subscribed producers current produced message amount.
         Console.Clear();
         if (informations != null)
         {
