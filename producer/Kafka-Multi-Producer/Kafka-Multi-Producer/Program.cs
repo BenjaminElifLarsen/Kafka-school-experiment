@@ -25,7 +25,7 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
     Random random = new();
     var timeStart = DateTime.Now;
     /* We create a task, that is automatically started, this ensures that the main thread can do other work.
-     * After creating the task, the main thread will run the do while until the task 't' has completed.
+     * After creating the task, the main thread will run the 'do while' until the task 't' has completed.
      */
     Task t = Task.Factory.StartNew( () => Parallel.For(0, producerAmount, index =>
         {
