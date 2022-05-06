@@ -5,7 +5,7 @@ namespace Kafka;
 
 internal class House : ISpecificRecord
 {
-    private Random _rnd = new Random();
+    private Random _rnd = new();
 
     private double _waterUsage;
     private double _electricityUsage;
@@ -16,12 +16,17 @@ internal class House : ISpecificRecord
 
     public static Schema _SCHEMA = Schema.Parse(File.ReadAllText("models/House.avsc"));
     public string Location { get; set; }
-    public double WaterUsage { get {_lastReading = _lastReading.AddHours(2); return _waterUsage * _rnd.NextDouble() * 2; } set => _waterUsage = value; }
+    public double WaterUsage { get { return _waterUsage * _rnd.NextDouble() * 2; } set => _waterUsage = value; }
     public double ElectricityUsage { get => _electricityUsage * _rnd.NextDouble() * 2; set => _electricityUsage = value; }
-    public double HeatingUsage { get => _heatingUsage * _rnd.NextDouble()*2; set => _heatingUsage = value; }
+    public double HeatingUsage { get => _heatingUsage * _rnd.NextDouble() * 2; set => _heatingUsage = value; }
     public DateTime Reading { get => _lastReading; set => _lastReading = value; }
 
     public Schema Schema => _SCHEMA;
+
+    public void UpdateTime(double houseIncreasement)
+    {
+        _lastReading = _lastReading.AddHours(houseIncreasement);
+    }
 
     public object Get(int fieldPos)
     {
@@ -47,5 +52,16 @@ internal class House : ISpecificRecord
             case 4: Reading = (DateTime)fieldValue; break;
             default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
         }
+    }
+
+    public House UniqueHouse()
+    {
+        return new House
+        {
+            ElectricityUsage = this.ElectricityUsage,
+            HeatingUsage = this.HeatingUsage,
+            WaterUsage = this.WaterUsage,
+            Location = new string(this.Location.Select(c => c).ToArray()), // Ensures the 'new' Location is not referencing the old Location memory storage.
+        };
     }
 }

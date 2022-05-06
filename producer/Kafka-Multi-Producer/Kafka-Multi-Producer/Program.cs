@@ -2,9 +2,9 @@
 using Kafka;
 using Kafka_Multi_Producer;
 
-StrartingProducers(40,1250);
+StrartingProducers(300,10000);
 
-void StrartingProducers(byte producerAmount, ulong producingAmount)
+void StrartingProducers(short producerAmount, ulong producingAmount)
 {
     string topic = "house";
     string schemaUrl = "172.16.250.12:8081";
@@ -18,9 +18,12 @@ void StrartingProducers(byte producerAmount, ulong producingAmount)
             new House{Location = "E", ElectricityUsage = 54, HeatingUsage = 1.5, WaterUsage = 0.4},
         };
     var timeStart = DateTime.Now;
+    Random random = new();
     Parallel.For(0, producerAmount, index =>
     {
-        var producer = new Producer(houses, schemaUrl, bootstrapServer, topic);
+        var house = houses[random.Next(houses.Length)].UniqueHouse();
+        house.Location += index.ToString();
+        var producer = new Producer(house, schemaUrl, bootstrapServer, topic);
         var result = producer.Produce(producingAmount);
         Console.WriteLine("Index " + index + ": " + result);
     });

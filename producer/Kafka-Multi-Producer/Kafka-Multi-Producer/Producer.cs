@@ -7,14 +7,14 @@ namespace Kafka_Multi_Producer;
 
 internal class Producer
 {
-    private readonly House[] _houses;
+    private readonly House _house;
     private readonly string _schemaString;
     private readonly string _topic;
     private readonly string _bootstrapServier;
 
-    public Producer(House[] houses, string schemaUrl, string bootstrapServer, string topic)
+    public Producer(House house, string schemaUrl, string bootstrapServer, string topic)
     {
-        _houses = houses;
+        _house = house;
         _schemaString = schemaUrl;
         _bootstrapServier = bootstrapServer;
         _topic = topic;
@@ -26,11 +26,9 @@ internal class Producer
         using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = _schemaString })) {
             using (var producer = new ProducerBuilder<Null, House>(new ProducerConfig { BootstrapServers = _bootstrapServier }).SetValueSerializer(new AvroSerializer<House>(schemaRegistry)).Build())
             {
-                Random random = new();
-                var house = _houses[random.Next(_houses.Length)];
                 for (ulong i = 0; i < (ulong)amount; i++)
                 {
-                    var message = new Message<Null, House> { Value = house };
+                    var message = new Message<Null, House> { Value = _house };
                     producer.ProduceAsync(_topic, message
                     ).ContinueWith(task =>
                         {
@@ -41,6 +39,7 @@ internal class Producer
                                   : $"produced to: {task.Result.TopicPartitionOffset}");*/
                         }
                     ).Wait();
+                    house.UpdateTime(2);
                 }
             }
         }
