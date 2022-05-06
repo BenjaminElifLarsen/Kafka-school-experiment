@@ -1,15 +1,17 @@
 ﻿
 using Kafka;
 using Kafka_Multi_Producer;
+using Kafka_Multi_Producer.Broker;
 
-StrartingProducers(300,10000);
+StrartingProducers(3,100);
 
 void StrartingProducers(short producerAmount, ulong producingAmount)
 {
     string topic = "house";
     string schemaUrl = "172.16.250.12:8081";
     string bootstrapServer = "172.16.250.13:9092";
-    
+    InfoPublisher _infoPublisher = Publisher.InfoPublisher;
+
     House[] houses = {
             new House{Location = "A", ElectricityUsage = 14, HeatingUsage = 1.1, WaterUsage = 0.1},
             new House{Location = "B", ElectricityUsage = 24, HeatingUsage = 1.2, WaterUsage = 1.1},
@@ -19,14 +21,27 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
         };
     var timeStart = DateTime.Now;
     Random random = new();
-    Parallel.For(0, producerAmount, index =>
+    Task t = Task.Factory.StartNew( () => Parallel.For(0, producerAmount, index =>
+        {
+            var house = houses[random.Next(houses.Length)].UniqueHouse();
+            house.Location += index.ToString();
+            var producer = new Producer(house, schemaUrl, bootstrapServer, topic, _infoPublisher);
+            var result = producer.Produce(producingAmount);
+            Console.WriteLine("Index " + index + ": " + result);
+        })
+    );
+
+    do
     {
-        var house = houses[random.Next(houses.Length)].UniqueHouse();
-        house.Location += index.ToString();
-        var producer = new Producer(house, schemaUrl, bootstrapServer, topic);
-        var result = producer.Produce(producingAmount);
-        Console.WriteLine("Index " + index + ": " + result);
-    });
+        var informations = _infoPublisher.GetInfos();
+        Console.Clear();
+        foreach(var info in informations)
+        {
+            Console.WriteLine($"{info.location}: {info.messageProduced}");
+            Thread.Sleep(500);
+        }
+    } while (!t.IsCompleted);
+
     var timePassed = DateTime.Now - timeStart;
     Console.WriteLine(timePassed.ToString());
 }

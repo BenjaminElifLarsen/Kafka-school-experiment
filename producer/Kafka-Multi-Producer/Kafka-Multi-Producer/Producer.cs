@@ -2,27 +2,33 @@
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using Kafka;
+using Kafka_Multi_Producer.Broker;
 
 namespace Kafka_Multi_Producer;
 
 internal class Producer
 {
+    protected readonly InfoPublisher _infoPublisher;
+
     private readonly House _house;
     private readonly string _schemaString;
     private readonly string _topic;
     private readonly string _bootstrapServier;
+    private ulong numProduced = 0;
 
-    public Producer(House house, string schemaUrl, string bootstrapServer, string topic)
+    public Producer(House house, string schemaUrl, string bootstrapServer, string topic, InfoPublisher infoPublisher)
     {
         _house = house;
         _schemaString = schemaUrl;
         _bootstrapServier = bootstrapServer;
         _topic = topic;
+        _infoPublisher = infoPublisher;
+
+        _infoPublisher.RaiseGetInfoEvent += AddInfo;
     }
 
     public ulong Produce(ulong amount)
     {
-        ulong numProduced = 0;
         using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig { Url = _schemaString })) {
             using (var producer = new ProducerBuilder<Null, House>(new ProducerConfig { BootstrapServers = _bootstrapServier }).SetValueSerializer(new AvroSerializer<House>(schemaRegistry)).Build())
             {
@@ -39,11 +45,16 @@ internal class Producer
                                   : $"produced to: {task.Result.TopicPartitionOffset}");*/
                         }
                     ).Wait();
-                    house.UpdateTime(2);
+                    _house.UpdateTime(2);
                 }
             }
         }
         return numProduced;
+    }
+
+    protected virtual void AddInfo(Object sender, ControlEvents.GetProcessEventArgs e)
+    {
+        e.Add(_house.Location, numProduced);
     }
 
 }
