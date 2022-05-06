@@ -25,8 +25,25 @@ internal class HouseDb
     {
         if (house.Location.Equals(Location))
         {
-
+            HandleElectricity();
+            HandleHeating();
+            HandleWater();
         }
+    }
+
+    private void HandleWater()
+    {
+
+    }
+
+    private void HandleHeating()
+    {
+
+    }
+
+    private void HandleElectricity()
+    {
+
     }
 
 }
