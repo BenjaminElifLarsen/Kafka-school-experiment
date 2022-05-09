@@ -14,9 +14,14 @@ internal class HouseDb
     public IList<(DateTime, IList<(DateTime, double)>)> ElectricitySamples { get; set; }
     public IList<(DateTime, IList<(DateTime, double)>)> HeatingSamples { get; set; } 
 
-    public HouseDb()
+    private HouseDb()
     {
 
+    }
+
+    public HouseDb(string location)
+    {
+        Location = location;
     }
 
     public void ComsumeData(House house)

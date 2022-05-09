@@ -1,6 +1,7 @@
 ﻿
 
-/* Data handling
+/* 
+ * Data handling
  * Avg use per house per day.
  * peak use per house per day
  * lowest use per house per day.
