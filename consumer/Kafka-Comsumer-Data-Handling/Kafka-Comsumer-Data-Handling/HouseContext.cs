@@ -8,13 +8,7 @@ namespace Kafka_Comsumer_Data_Handling;
 internal class HouseContext : DbContext
 {
 
-    /*
-     * Need to have data conversions 
-     * : for seperation between data and value
-     * ; for seperation between dfferent entities
-     * - for seperating key and value
-     * . for seperating the key and value of the value mentioned above
-     */
+
 
     public HouseContext()
     {
@@ -25,7 +19,10 @@ internal class HouseContext : DbContext
     public DbSet<OverviewDataDb> Overviews { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    {    
+        /*
+         * The converter does not handle errors in the data string, v, it tries to convert. For this project it is fine, since the project is a pratice for something else.
+         */
         var converter = new ValueConverter<IList<(DateTime, IList<(DateTime, double)>)>, string>(v => ToDb(v), v => ToEntity(v));
 
         modelBuilder.Entity<HouseDb>()
@@ -40,7 +37,17 @@ internal class HouseContext : DbContext
             .Property(e => e.WaterSamples)
             .HasConversion(converter);
     }
-    string ToDb(IList<(DateTime, IList<(DateTime, double)>)> data)
+
+    /*
+     * Data conversions:
+     * ; for seperation between dfferent dates.
+     * - for seperating dateTime key and (dateTime, IList<dateTime,double>) value.
+     * : for seperation between dataTime and double ín the value mentioned above.
+     * . for seperating the different keyValues in the value mentioned above.
+     * DateTime is converted to long.
+     */
+
+    private string ToDb(IList<(DateTime, IList<(DateTime, double)>)> data)
     {
         StringBuilder sb = new();
         foreach(var keyValue in data)
@@ -59,17 +66,17 @@ internal class HouseContext : DbContext
         return sb.ToString();
     }
 
-    IList<(DateTime, IList<(DateTime, double)>)> ToEntity(string data)
+    private IList<(DateTime, IList<(DateTime, double)>)> ToEntity(string data)
     {
         var collection = new List<(DateTime, IList<(DateTime, double)>)>();
-        string[] keyValues = data.Split(';');
+        string[] keyValues = data.Split(';',StringSplitOptions.RemoveEmptyEntries);
         foreach(string keyValue in keyValues)
         {
             var split = keyValue.Split('-');
-            var keyDate = new DateTime(long.Parse(split[0]));
-            var minorCollection = new List<(DateTime, double)>();
             if (split.Length == 2)
             {
+                var keyDate = new DateTime(long.Parse(split[0]));
+                var minorCollection = new List<(DateTime, double)>();
                 string[] minorKeyValues = split[1].Split('.');
                 foreach(string kv in minorKeyValues)
                 {
@@ -78,8 +85,8 @@ internal class HouseContext : DbContext
                     var value = double.Parse(minorSplits[1]);
                     minorCollection.Add((time, value));
                 }
+                collection.Add((keyDate,minorCollection));
             }
-            collection.Add((keyDate,minorCollection));
         }
         return collection;
     }
