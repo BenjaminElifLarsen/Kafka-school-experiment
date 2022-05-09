@@ -14,8 +14,7 @@ internal class InfoPublisher
     public event getInfoEventHandler RaiseGetInfoEvent;
 
     /*
-     * This is called by the code that wants to trigger the event.
-     
+     * This is called by the code that wants to trigger the event.     
      */
     public List<(string location, ulong messageProduced)> GetInfos()
     {
