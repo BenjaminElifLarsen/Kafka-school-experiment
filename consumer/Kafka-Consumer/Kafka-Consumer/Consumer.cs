@@ -36,7 +36,7 @@ internal class Consumer
                 {
                     var cr = consumer.Consume(cts.Token);
                     Console.WriteLine(cr.Message.Timestamp.UtcDateTime.ToString("yyyy-MM-dd HH:mm:ss") + $":" + Environment.NewLine +
-                        $" Location {cr.Message.Value.Location}, " + Environment.NewLine +
+                        $" Location: {cr.Message.Value.Location}, " + Environment.NewLine +
                         $" Electricity: {cr.Message.Value.ElectricityUsage}, " + Environment.NewLine +
                         $" Heating: {cr.Message.Value.HeatingUsage}, " + Environment.NewLine +
                         $" Water: {cr.Message.Value.WaterUsage}" + Environment.NewLine +
