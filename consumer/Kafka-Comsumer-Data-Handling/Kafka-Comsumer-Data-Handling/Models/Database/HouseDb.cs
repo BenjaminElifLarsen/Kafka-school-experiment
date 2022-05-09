@@ -6,9 +6,8 @@ internal class HouseDb
 {
     public Guid HouseDbId { get; set; }
     public string Location { get; set; }
-
-    //public DateTime LastDay { get; set; } //maybe replace with another way. Need to handle in cases there are no order in the data.
-    //So key-value where key is date and value is tuple of time and usage. 
+ 
+    //If the data is over a certian n timeUnit old it should be removed. Handled in the logic location
 
     public IList<(DateTime, IList<(DateTime, double)>)> WaterSamples { get; set; }
     public IList<(DateTime, IList<(DateTime, double)>)> ElectricitySamples { get; set; }
@@ -82,23 +81,5 @@ internal class HouseDb
         samples.Item2.Add((date, value));
     }
 
-    //move those to another class
-    //private double CalculateAvg(DateTime value, (DateTime, double)[] data) //to be called by all Handles
-    //{
-    //    var values = data.Where(x => x.Item1.Date == value.Date).Select(x => x.Item2).ToArray();
-    //    return values.Sum()/values.Length;
-    //}
-
-    //private double CalculateMin(DateTime value, (DateTime, double)[] data)
-    //{
-    //    var values = data.Where(x => x.Item1.Date == value.Date).Select(x => x.Item2).ToArray();
-    //    return values.Min();
-    //}
-
-    //private double CalculateMax(DateTime value, (DateTime, double)[] data)
-    //{
-    //    var values = data.Where(x => x.Item1.Date == value.Date).Select(x => x.Item2).ToArray();
-    //    return values.Max();
-    //}
 
 }
