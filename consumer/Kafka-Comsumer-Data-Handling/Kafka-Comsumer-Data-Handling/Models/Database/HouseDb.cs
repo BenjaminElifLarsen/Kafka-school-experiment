@@ -9,9 +9,9 @@ internal class HouseDb
  
     //If the data is over a certian n timeUnit old it should be removed. Handled in the logic location
 
-    public IList<(DateTime, IList<(DateTime, double)>)> WaterSamples { get; set; }
-    public IList<(DateTime, IList<(DateTime, double)>)> ElectricitySamples { get; set; }
-    public IList<(DateTime, IList<(DateTime, double)>)> HeatingSamples { get; set; } 
+    public Dictionary<DateTime, IList<Sample<double>>> WaterSamples { get; set; }
+    public Dictionary<DateTime, IList<Sample<double>>> ElectricitySamples { get; set; }
+    public Dictionary<DateTime, IList<Sample<double>>> HeatingSamples { get; set; } 
 
     private HouseDb()
     {
@@ -35,51 +35,59 @@ internal class HouseDb
 
     private void HandleWater(DateTime date, double value)
     {
-        var samples = WaterSamples.SingleOrDefault(x => x.Item1.Date == date.Date);
+        var key = new DateTime(date.Year, date.Month, date.Day);
+        var samples = WaterSamples[new DateTime(date.Year, date.Month, date.Day)];
         
-        if(samples.Item1 == default )
+        if(samples == default )
         {
-            samples.Item1 = new DateTime(date.Year, date.Month, date.Day);
-        }
-        if(samples.Item2 == default)
-        {
-            samples.Item2 = new List<(DateTime, double)>() { };
+            WaterSamples.Add(key, new List<Sample<double>>());
         }
 
-        samples.Item2.Add((date, value));
+        WaterSamples[new DateTime(date.Year, date.Month, date.Day)].Add(new Sample<double> { Reading = date, Value = value});
     }
 
     private void HandleHeating(DateTime date, double value)
     {
-        var samples = HeatingSamples.SingleOrDefault(x => x.Item1.Date == date.Date);
+        var key = new DateTime(date.Year, date.Month, date.Day);
+        var samples = HeatingSamples[key];
 
-        if (samples.Item1 == default)
+        if (samples == default)
         {
-            samples.Item1 = new DateTime(date.Year, date.Month, date.Day);
-        }
-        if (samples.Item2 == default)
-        {
-            samples.Item2 = new List<(DateTime, double)>() { };
+            HeatingSamples.Add(key, new List<Sample<double>>());
         }
 
-        samples.Item2.Add((date, value));
+        HeatingSamples[key].Add(new Sample<double> { Reading = date, Value = value });
     }
 
     private void HandleElectricity(DateTime date, double value)
     {
-        var samples = ElectricitySamples.SingleOrDefault(x => x.Item1.Date == date.Date);
+        var key = new DateTime(date.Year, date.Month, date.Day);
+        var samples = ElectricitySamples[key];
 
-        if (samples.Item1 == default)
+        if (samples == default)
         {
-            samples.Item1 = new DateTime(date.Year, date.Month, date.Day);
-        }
-        if (samples.Item2 == default)
-        {
-            samples.Item2 = new List<(DateTime, double)>() { };
+            ElectricitySamples.Add(key, new List<Sample<double>>());
         }
 
-        samples.Item2.Add((date, value));
+        ElectricitySamples[key].Add(new Sample<double> { Reading = date, Value = value });
     }
 
 
+}
+
+
+internal class Sample<T>
+{
+    public DateTime Reading { get; set; }
+    public T Value { get; set; }
+    public Sample()
+    {
+
+    }
+
+    public Sample(DateTime reading, T value)
+    {
+        Reading = reading;
+        Value = value;
+    }
 }

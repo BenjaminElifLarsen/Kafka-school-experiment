@@ -18,3 +18,5 @@
  * Seperation of concerns, houseDb just handle keeping track of its data, while something else handle data calculations.
  * Need to handle out of order data, e.g. 1st May, then 2nd May and then 1st May again.
  */
+
+Console.WriteLine("WIP");
