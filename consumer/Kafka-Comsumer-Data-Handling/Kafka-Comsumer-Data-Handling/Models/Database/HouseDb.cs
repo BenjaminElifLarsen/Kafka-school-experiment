@@ -9,9 +9,9 @@ internal class HouseDb
  
     //If the data is over a certian n timeUnit old it should be removed. Handled in the logic location
 
-    public Dictionary<DateTime, IList<Sample<double>>> WaterSamples { get; set; }
-    public Dictionary<DateTime, IList<Sample<double>>> ElectricitySamples { get; set; }
-    public Dictionary<DateTime, IList<Sample<double>>> HeatingSamples { get; set; } 
+    public Dictionary<long, IList<Sample<double>>> WaterSamples { get; set; }
+    public Dictionary<long, IList<Sample<double>>> ElectricitySamples { get; set; }
+    public Dictionary<long, IList<Sample<double>>> HeatingSamples { get; set; } 
 
     private HouseDb()
     {
@@ -21,6 +21,9 @@ internal class HouseDb
     public HouseDb(string location)
     {
         Location = location;
+        WaterSamples = new Dictionary<long, IList<Sample<double>>>();
+        ElectricitySamples = new Dictionary<long, IList<Sample<double>>>();
+        HeatingSamples = new Dictionary<long, IList<Sample<double>>>();
     }
 
     public void ComsumeData(House house)
@@ -35,20 +38,20 @@ internal class HouseDb
 
     private void HandleWater(DateTime date, double value)
     {
-        var key = new DateTime(date.Year, date.Month, date.Day);
-        var samples = WaterSamples[new DateTime(date.Year, date.Month, date.Day)];
+        var key = new DateTime(date.Year, date.Month, date.Day).Ticks;
+        var samples = WaterSamples[key];
         
         if(samples == default )
         {
             WaterSamples.Add(key, new List<Sample<double>>());
         }
 
-        WaterSamples[new DateTime(date.Year, date.Month, date.Day)].Add(new Sample<double> { Reading = date, Value = value});
+        WaterSamples[key].Add(new Sample<double> { Reading = date, Value = value});
     }
 
     private void HandleHeating(DateTime date, double value)
     {
-        var key = new DateTime(date.Year, date.Month, date.Day);
+        var key = new DateTime(date.Year, date.Month, date.Day).Ticks;
         var samples = HeatingSamples[key];
 
         if (samples == default)
@@ -61,7 +64,7 @@ internal class HouseDb
 
     private void HandleElectricity(DateTime date, double value)
     {
-        var key = new DateTime(date.Year, date.Month, date.Day);
+        var key = new DateTime(date.Year, date.Month, date.Day).Ticks;
         var samples = ElectricitySamples[key];
 
         if (samples == default)
