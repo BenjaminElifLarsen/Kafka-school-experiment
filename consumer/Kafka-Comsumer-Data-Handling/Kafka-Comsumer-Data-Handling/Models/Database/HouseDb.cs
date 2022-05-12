@@ -79,7 +79,7 @@ internal class HouseDb
 }
 
 
-internal class Sample<T>
+internal record Sample<T>
 {
     public DateTime Reading { get; set; }
     public T Value { get; set; }
