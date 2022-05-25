@@ -1,6 +1,6 @@
 # Kafka-school-experiment
 
-The Producer and Consumer projects require the docker-compose file to be used, if the Kafka is set up via Docker. Both of the docker-compose files should work, but only the one in kafka-project-docker has been tested.
+The Producer and Consumer projects can use the docker-compose file to be used, if the Kafka is set up via Docker. Both of the docker-compose files should work, but only the one in kafka-project-docker has been tested. They can also connect to a physical Kafka-cluster. Just remember to set the url values to the correct ones. 
 
 --Notes--
 
