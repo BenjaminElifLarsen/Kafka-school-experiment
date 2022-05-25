@@ -34,6 +34,11 @@ void StrartingProducers(short producerAmount, ulong producingAmount)
             house.Location += index.ToString();
             var producer = new Producer(house, schemaUrl, bootstrapServer, topic, _infoPublisher);
             var data = producer.Produce(producingAmount);
+            producer.RemoveSubscriptions();
+            /*
+             * Given how the Producer is set up, if the Produce() and RemoveSubscriptions() were called from inside of the class and we did not care about data (or we let the Producer handle that too or use a event for it),
+             * we would not need to store the Producer in a variable as the event subscription would prevent the garbage collector from collecting the Producer. 
+             */
             while (!Data.AddValue(data)) ;
         })
     );

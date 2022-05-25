@@ -6,6 +6,7 @@ internal static class Data
 {
     private static int usingResource = 0;
     public static ulong MessageProduced { get; private set; }
+
     /*
      * This is needed, since ulong cannot be volatile.
      * This is because a thread can only write a specific amount of bits at a time (depends on the OS)

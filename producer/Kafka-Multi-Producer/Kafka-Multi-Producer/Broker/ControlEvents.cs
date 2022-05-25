@@ -14,12 +14,12 @@ internal class ControlEvents : EventArgs
          * as the rest are overwritten by those called after.
          * This is the reason for the collection as it allows us to save data from each subscriber. 
          */
-        private List<(string location, ulong messageProduced)> producerInfo = new();
+        private List<(string location, ulong messageProduced)> _producerInfo = new();
 
         // This get called over in the objects that are subscribed to an event that uses this event class.
         public void Add(string location, ulong messageProduced)
         {
-            producerInfo.Add((location, messageProduced));
+            _producerInfo.Add((location, messageProduced));
         }
 
         /*
@@ -27,7 +27,7 @@ internal class ControlEvents : EventArgs
          */
         public List<(string location, ulong messageProduced)> GetProcessings()
         {
-            return producerInfo;
+            return _producerInfo;
         }
     }
 

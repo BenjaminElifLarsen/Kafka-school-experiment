@@ -45,7 +45,6 @@ internal class Producer
                 }
             }
         }
-        RemoveSubscriptions();
         return _numProduced;
     }
 
@@ -57,9 +56,9 @@ internal class Producer
     /*
      * Because we are using subscriptions and events to get data from the producers this call here is important.
      * We NEED to unsubscribe any subscribed methods before the garbage collection can be run for the object
-     * as else the event will hold a reference to the object. 
+     * as the subscripted event holds a reference to the object. 
      */
-    protected virtual void RemoveSubscriptions()
+    public virtual void RemoveSubscriptions()
     {
         _infoPublisher.RaiseGetInfoEvent -= AddInfo;
     }
