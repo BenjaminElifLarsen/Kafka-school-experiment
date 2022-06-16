@@ -62,9 +62,6 @@ If using the CLI and standing on the bootstrapserver (most likely will also work
 	/bin/kafka-log-dirs --describe --bootstrap-server <ip>:9092 --topic-list <topic>
 and it will list information from each broker.
 
-Kafdrop runs at .11
-
-
 https://www.confluent.io/blog/decoupling-systems-with-apache-kafka-schema-registry-and-avro/ (outdated, it seems, regarding the repo it references)
 https://github.com/confluentinc/confluent-kafka-dotnet/tree/master/examples/AvroSpecific
 https://github.com/confluentinc/confluent-kafka-dotnet/blob/master/examples/AvroBlogExamples/Program.cs

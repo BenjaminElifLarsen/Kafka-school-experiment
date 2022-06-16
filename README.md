@@ -5,7 +5,7 @@ The Producer and Consumer projects can use the docker-compose file to be used, i
 --Notes--
 
 The schema requires a schema registry to work, is present in both docker-compose files.
-It seems like, with how the programs are right now, that Producer needs to be run before Comsumer the first time. 
+As it is right now, with how the programs are right now, that Producer needs to be run before Comsumer the first time. 
   The reason for this is that it adds the schema to the registry. 
   The schemas in both ends need to be identical. Comsumer seems to check up against the schema in the schema registry (need to figure out how it finds a specific schema).
     The same goes for the classes, fields/properties need to share names. 
